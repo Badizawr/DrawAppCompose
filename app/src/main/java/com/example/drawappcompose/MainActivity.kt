@@ -27,6 +27,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.foundation.layout.Column as Column1
 
@@ -41,9 +42,13 @@ class MainActivity : ComponentActivity() {
             DrawAppComposeTheme {
                 Column {
                     DrawCanvas(pathData)
-                    BottomPanel { color ->
+                    BottomPanel( { color ->
                         pathData.value = pathData.value.copy(
                             color = color
+                        )
+                    }) {lineWidth ->
+                        pathData.value = pathData.value.copy(
+                            lineWidth = lineWidth
                         )
                     }
                 }
@@ -100,7 +105,9 @@ fun DrawCanvas(pathData: MutableState<PathData>) {
             drawPath(
                 pathData.path,
                 color = pathData.color,
-                style = Stroke(5f)
+                style = Stroke(pathData.lineWidth,
+                    cap = StrokeCap.Round
+                    )
             )
         }
         Log.d("MyLog", "Size: ${pathList.size}")
