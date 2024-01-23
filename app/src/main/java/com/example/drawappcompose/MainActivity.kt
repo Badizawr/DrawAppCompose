@@ -27,6 +27,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.foundation.layout.Column as Column1
@@ -39,17 +40,25 @@ class MainActivity : ComponentActivity() {
             val pathData = remember {
                 mutableStateOf(PathData())
             }
+            val pathList = remember {
+                mutableStateListOf(PathData())
+            }
             DrawAppComposeTheme {
                 Column {
-                    DrawCanvas(pathData)
-                    BottomPanel( { color ->
+                    DrawCanvas(pathData, pathList)
+                    BottomPanel({ color ->
                         pathData.value = pathData.value.copy(
                             color = color
                         )
-                    }) {lineWidth ->
+                    },
+                    { lineWidth ->
                         pathData.value = pathData.value.copy(
                             lineWidth = lineWidth
-                        )
+                        )}
+                    ){
+                        pathList.removeIf { pathD ->
+                            pathList[pathList.size-1] == pathD
+                        }
                     }
                 }
             }
@@ -58,16 +67,12 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun DrawCanvas(pathData: MutableState<PathData>) {
+fun DrawCanvas(pathData: MutableState<PathData>, pathList: SnapshotStateList<PathData>) {
     var tempPath = Path()
-    val pathList = remember {
-        mutableStateListOf(PathData())
-    }
-
     Canvas(
         modifier = Modifier
             .fillMaxWidth()
-            .fillMaxHeight(0.75f)
+            .fillMaxHeight(0.73f)
             .pointerInput(true) {
                 detectDragGestures(
                     onDragStart = {
@@ -105,9 +110,10 @@ fun DrawCanvas(pathData: MutableState<PathData>) {
             drawPath(
                 pathData.path,
                 color = pathData.color,
-                style = Stroke(pathData.lineWidth,
+                style = Stroke(
+                    pathData.lineWidth,
                     cap = StrokeCap.Round
-                    )
+                )
             )
         }
         Log.d("MyLog", "Size: ${pathList.size}")

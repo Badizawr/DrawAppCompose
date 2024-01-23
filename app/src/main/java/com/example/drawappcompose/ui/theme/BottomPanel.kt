@@ -30,7 +30,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun BottomPanel(onClick: (Color) -> Unit, onLineWidthChange: (Float) -> Unit) {
+fun BottomPanel(onClick: (Color) -> Unit,
+                onLineWidthChange: (Float) -> Unit,
+                onRefreshClick:() -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -44,7 +46,7 @@ fun BottomPanel(onClick: (Color) -> Unit, onLineWidthChange: (Float) -> Unit) {
             onLineWidthChange(lineWidth)
         }
         ButtonPanel {
-
+            onRefreshClick()
         }
     }
 }
@@ -64,7 +66,7 @@ fun Colorlist(onClick: (Color) -> Unit) {
         items(colors) { color ->
             Box(
                 modifier = Modifier
-                    .padding(10.dp)
+                    .padding(end = 10.dp)
                     .clickable {
                         onClick(color)
                     }
@@ -95,12 +97,13 @@ fun CustomSlider(onChange: (Float) -> Unit) {
 @Composable
 fun ButtonPanel(onClick: () -> Unit) {
     Row(
-        horizontalArrangement = Arrangement.SpaceBetween
+        modifier = Modifier.fillMaxWidth().padding(10.dp),
+        horizontalArrangement = Arrangement.Center
     ) {
         IconButton(
             modifier = Modifier
-                .background(Color.White)
-                .clip(CircleShape),
+                .clip(CircleShape)
+                .background(Color.White),
             onClick = {
             onClick()
         }) {
