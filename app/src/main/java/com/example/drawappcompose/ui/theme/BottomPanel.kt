@@ -13,6 +13,8 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Create
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -27,26 +29,30 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun BottomPanel(onClick: (Color) -> Unit,
-                onLineWidthChange: (Float) -> Unit,
-                onRefreshClick:() -> Unit) {
+fun BottomPanel(
+    onClick: (Color) -> Unit,
+    onLineWidthChange: (Float) -> Unit,
+    onRefreshClick: () -> Unit,
+    onCapClick: (StrokeCap) ->Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .background(Color.LightGray),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Colorlist{ color ->
+        Colorlist { color ->
             onClick(color)
         }
-        CustomSlider{ lineWidth ->
+        CustomSlider { lineWidth ->
             onLineWidthChange(lineWidth)
         }
-        ButtonPanel {
-            onRefreshClick()
+        ButtonPanel({ onRefreshClick() }) {cap ->
+            onCapClick(cap)
         }
     }
 }
@@ -95,23 +101,72 @@ fun CustomSlider(onChange: (Float) -> Unit) {
 }
 
 @Composable
-fun ButtonPanel(onClick: () -> Unit) {
+fun ButtonPanel(onClick: () -> Unit, onCapClick: (StrokeCap) -> Unit) {
     Row(
-        modifier = Modifier.fillMaxWidth().padding(10.dp),
-        horizontalArrangement = Arrangement.Center
+        modifier = Modifier
+            .fillMaxWidth()
     ) {
-        IconButton(
+        Row(
             modifier = Modifier
-                .clip(CircleShape)
-                .background(Color.White),
-            onClick = {
-            onClick()
-        }) {
-            Icon(
-                Icons.Default.Refresh,
-                contentDescription = null
-            )
+                .fillMaxWidth(0.5f)
+                .padding(10.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            IconButton(
+                modifier = Modifier
+                    .clip(CircleShape)
+                    .background(Color.White),
+                onClick = {
+                    onClick()
+                }) {
+                Icon(
+                    Icons.Default.Refresh,
+                    contentDescription = null
+                )
+            }
+        }
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(10.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            IconButton(
+                modifier = Modifier
+                    .clip(CircleShape)
+                    .background(Color.White),
+                onClick = {
+                    onCapClick(StrokeCap.Round)
+                }) {
+                Icon(
+                    Icons.Default.Create,
+                    contentDescription = null
+                )
+            }
+            IconButton(
+                modifier = Modifier
+                    .clip(CircleShape)
+                    .background(Color.White),
+                onClick = {
+                    onCapClick(StrokeCap.Square)
+                }) {
+                Icon(
+                    Icons.Default.Edit,
+                    contentDescription = null
+                )
+            }
+            IconButton(
+                modifier = Modifier
+                    .clip(CircleShape)
+                    .background(Color.White),
+                onClick = {
+                    onCapClick(StrokeCap.Butt)
+                }) {
+                Icon(
+                    Icons.Default.Edit,
+                    contentDescription = null
+                )
+            }
         }
     }
 }
-
